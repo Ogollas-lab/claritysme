@@ -1,0 +1,16 @@
+"use client";
+
+import { useState } from "react";
+
+interface Boardpack { reportId: string; companyName: string; period: string; highlights: string[]; sections: Array<{ title: string; summary: string; metrics: Array<{ label: string; value: string }> }> }
+
+export default function BoardpackPage() {
+  const [report, setReport] = useState<Boardpack | null>(null);
+  const [error, setError] = useState("");
+  const [shareUrl, setShareUrl] = useState("");
+  const [sharing, setSharing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  async function generate() { setLoading(true); setError(""); setShareUrl(""); try { const response = await fetch("/api/reports/boardpack"); const body = await response.json(); if (!response.ok) throw new Error(body.error); setReport(body as Boardpack); } catch (value) { setError(value instanceof Error ? value.message : "Unable to generate report"); } finally { setLoading(false); } }
+  async function createShareLink() { if (!report) return; setSharing(true); setError(""); try { const response = await fetch("/api/share", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reportId: report.reportId }) }); const body = await response.json() as { url?: string; error?: string }; if (!response.ok || !body.url) throw new Error(body.error || "Unable to create share link"); setShareUrl(body.url); } catch (value) { setError(value instanceof Error ? value.message : "Unable to create share link"); } finally { setSharing(false); } }
+  return <div className="mx-auto max-w-5xl px-6 py-8"><p className="label-sm">Reporting</p><h1 className="mt-2 text-3xl font-bold">Boardpack</h1><p className="mt-2 text-[#8888a4]">Generate a concise report from your latest financial data.</p><button type="button" onClick={generate} disabled={loading} className="btn-primary mt-6">{loading ? "Generating..." : "Generate boardpack"}</button>{error && <p role="alert" className="mt-4 text-sm text-rose-300">{error}</p>}{report && <article className="mt-8 space-y-6"><header className="glass-card p-6"><div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start"><div><h2 className="text-2xl font-bold">{report.companyName}</h2><p className="mt-1 text-[#8888a4]">Period: {report.period}</p></div><button type="button" onClick={createShareLink} disabled={sharing} className="btn-ghost">{sharing ? "Creating link..." : "Create share link"}</button></div>{shareUrl && <p role="status" className="mt-4 break-all text-sm text-emerald-300"><a href={shareUrl} target="_blank" rel="noreferrer" className="underline">{shareUrl}</a></p>}<ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-[#c4c4d4]">{report.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul></header>{report.sections.map((section) => <section key={section.title} className="glass-card p-6"><h2 className="section-title">{section.title}</h2><p className="mt-2 text-sm text-[#8888a4]">{section.summary}</p><div className="mt-4 grid gap-3 sm:grid-cols-3">{section.metrics.map((metric) => <div key={metric.label} className="rounded-lg border border-white/10 p-3"><p className="label-sm">{metric.label}</p><p className="mt-2 font-semibold">{metric.value}</p></div>)}</div></section>)}</article>}</div>;
+}

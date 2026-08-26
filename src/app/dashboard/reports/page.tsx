@@ -1,0 +1,5 @@
+import Link from "next/link";
+
+export default function ReportsPage() {
+  return <div className="mx-auto max-w-5xl px-6 py-8"><p className="label-sm">Reporting</p><h1 className="mt-2 text-3xl font-bold">Reports</h1><p className="mt-2 text-[#8888a4]">Generate board-ready reporting and export your underlying data.</p><div className="mt-8 grid gap-5 md:grid-cols-2"><Link href="/dashboard/reports/boardpack" className="glass-card p-6 transition hover:border-indigo-400/50"><h2 className="text-xl font-bold">Boardpack report</h2><p className="mt-2 text-sm text-[#8888a4]">Generate a report from your latest KPI snapshot and transactions.</p></Link><a href="/api/export?type=records" className="glass-card p-6 transition hover:border-indigo-400/50"><h2 className="text-xl font-bold">Export transactions</h2><p className="mt-2 text-sm text-[#8888a4]">Download all company transactions as CSV.</p></a><a href="/api/export?type=snapshots" className="glass-card p-6 transition hover:border-indigo-400/50"><h2 className="text-xl font-bold">Export KPI history</h2><p className="mt-2 text-sm text-[#8888a4]">Download calculated KPI snapshots as CSV.</p></a></div></div>;
+}

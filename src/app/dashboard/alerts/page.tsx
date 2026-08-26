@@ -1,0 +1,7 @@
+import { requireCompanyContext } from "@/lib/supabase/context";
+import { createClient } from "@/lib/supabase/server";
+import { generateAlerts } from "@/lib/calculations/alerts";
+import type { Company, KPISnapshot } from "@/types";
+import { DataNotice } from "@/components/dashboard/DataNotice";
+
+export default async function AlertsPage() { const { company } = await requireCompanyContext(); const supabase = await createClient(); const { data } = await supabase.from("kpi_snapshots").select("*").eq("company_id", company.id).order("period_year", { ascending:false }).order("period_month", { ascending:false }).limit(1).maybeSingle(); const alerts = data ? generateAlerts(data as KPISnapshot, company as Company) : []; return <div className="mx-auto max-w-5xl px-6 py-8"><p className="label-sm">Monitoring</p><h1 className="mt-2 text-3xl font-bold">Alerts</h1><p className="mt-2 text-[#8888a4]">Automated checks on runway, margins, payroll, and revenue momentum.</p>{!data ? <DataNotice /> : alerts.length === 0 ? <section className="glass-card mt-8 p-8"><h2 className="text-xl font-bold text-emerald-300">No active alerts</h2><p className="mt-2 text-[#8888a4]">Your latest snapshot is within the current monitoring thresholds.</p></section> : <div className="mt-8 space-y-4">{alerts.map((alert) => <article key={alert.id} className="glass-card border-l-4 border-l-rose-400 p-5"><p className="label-sm">{alert.severity} · {alert.type}</p><p className="mt-2">{alert.message}</p></article>)}</div>}</div>; }

@@ -1,0 +1,8 @@
+import { requireCompanyContext } from "@/lib/supabase/context";
+import { createClient } from "@/lib/supabase/server";
+import { buildMonthlyRevenueSeries } from "@/lib/calculations/forecast";
+import { formatCurrency } from "@/lib/calculations/kpi";
+import type { FinancialRecord } from "@/types";
+import { DataNotice } from "@/components/dashboard/DataNotice";
+
+export default async function TrendsPage() { const { company }=await requireCompanyContext(); const supabase=await createClient(); const {data}=await supabase.from("financial_records").select("*").eq("company_id",company.id); const rows=(data??[]) as FinancialRecord[]; const series=buildMonthlyRevenueSeries(rows); return <div className="mx-auto max-w-6xl px-6 py-8"><p className="label-sm">Analysis</p><h1 className="mt-2 text-3xl font-bold">Revenue and expense trends</h1><p className="mt-2 text-[#8888a4]">Monthly activity from the last 12 periods.</p>{!rows.length?<DataNotice/>:<div className="mt-8 overflow-x-auto glass-card"><table className="w-full min-w-[560px] text-left text-sm"><thead className="border-b border-white/10 text-[#8888a4]"><tr><th className="px-5 py-4">Period</th><th className="px-5 py-4">Revenue</th><th className="px-5 py-4">Expenses</th><th className="px-5 py-4">Net</th></tr></thead><tbody>{series.map((item)=><tr key={`${item.year}-${item.month}`} className="border-b border-white/5"><td className="px-5 py-4">{item.year}-{String(item.month).padStart(2,"0")}</td><td className="px-5 py-4">{formatCurrency(item.revenue,company.currency)}</td><td className="px-5 py-4">{formatCurrency(item.expenses,company.currency)}</td><td className="px-5 py-4">{formatCurrency(item.revenue-item.expenses,company.currency)}</td></tr>)}</tbody></table></div>}</div>; }

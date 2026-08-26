@@ -6,21 +6,35 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "test": "tsx src/lib/calculations/__tests__/kpi.test.ts && tsx src/lib/calculations/__tests__/forecast.test.ts && tsx src/lib/calculations/__tests__/alerts.test.ts && tsx src/lib/csv/__tests__/parser.test.ts && tsx src/lib/reports/__tests__/boardpack.test.ts"
   },
   "dependencies": {
-    "next": "16.3.1",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "@anthropic-ai/sdk": "^0.56.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.112.4",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.511.0",
+    "next": "^15.5.23",
+    "papaparse": "^5.5.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.3",
+    "stripe": "^17.7.0",
+    "zod": "^3.25.30"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.3.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.0.0",
+    "@types/papaparse": "^5.3.16",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "15.3.3",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.9",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
   }
 }
