@@ -52,7 +52,7 @@ Start the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](https://claritysme-git-main-steve-2a21.vercel.app/).
 
 ## Environment variables
 
